@@ -9,7 +9,7 @@ namespace EvolutionaryPerceptron
     [RequireComponent(typeof(Stickman))]
     public class NeuralStickman : BotHandler
     {
-        
+        public Rigidbody2D rb;
         public Stickman stickman;
         private int inputSize;
         private double[,] inputs;
@@ -29,7 +29,7 @@ namespace EvolutionaryPerceptron
             StartCoroutine(CheckStill());
         }
 
-        void Update()
+        void FixedUpdate()
         {
             stickman.look();
             for(int i = 0; i < inputSize; i++)
@@ -38,8 +38,9 @@ namespace EvolutionaryPerceptron
             }
 
             x = stickman.torso.transform.position.x;
-            lifespan += 0.00001f;
+            lifespan += 0.0001f;
             nb.AddFitness((x - lastX) / lifespan);
+            //nb.AddFitness(rb.velocity.x / 50);
             if(Mathf.Abs(stickman.torsoRotation) > 170 && Mathf.Abs(stickman.torsoRotation) < 190)
             {
                 nb.AddFitness(-1000);

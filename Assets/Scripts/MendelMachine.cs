@@ -118,6 +118,13 @@ namespace EvolutionaryPerceptron.MendelMachine {
 
         protected virtual Individual[] Mendelization () {
             population = SortPopulation ();
+            for(int i = 0; i < population.Length; i++)
+            {
+                if(population[i].fitness < 0)
+                {
+                    population[i].fitness = 0;
+                }
+            }
             if (debug) {
                 var m = population[0].fitness;
                 var c = "Max fitness of generation " + generation + ",is: " + m;

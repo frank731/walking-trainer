@@ -171,16 +171,16 @@ MonoBehaviour:
   dataPath: Walking.mm
   numberOfGenerationsToSave: 20
   force: 0
-  activationFunction: 1
-  neuronsPerLayer: 0f0000001e0000001400000005000000
+  activationFunction: 0
+  neuronsPerLayer: 0500000007000000
   seed: 99
   sexualMultiplication: 1
   exponentialFitness: 1
   elitism: 5
-  newIndividuals: 3
+  newIndividuals: 4
   individualsPerGeneration: 50
   stdDevMutatuion: 0.1
-  maxPerturbation: 1
+  maxPerturbation: 0.4
   prefab: {fileID: 4553023091872537903, guid: 21034dd148382704a966ceeb95cd1ce6, type: 3}
   performanceMethod: 0
   generation: 0
@@ -231,7 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   farthestStickman: {fileID: 1765804389}
-  stickmanMendel: {fileID: 0}
+  stickmanMendel: {fileID: 454227260}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -422,8 +422,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2120593619}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 57.04, y: -4.019203, z: 0}
-  m_LocalScale: {x: 200, y: 1, z: 1}
+  m_LocalPosition: {x: 57.04, y: -4, z: 0}
+  m_LocalScale: {x: 1000, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1

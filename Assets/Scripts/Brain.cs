@@ -14,6 +14,7 @@ namespace EvolutionaryPerceptron.MendelMachine {
         public bool learningPhase;
         [Header ("You can save the brain from the context menu")]
         public string brainPath;
+        [SerializeField]
         float fitness;
         int index;
         private bool fail = false;
