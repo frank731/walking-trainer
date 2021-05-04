@@ -14,10 +14,10 @@ namespace EvolutionaryPerceptron
         private int inputSize;
         private double[,] inputs;
         private double[,] outputs;
-        private float lifespan = 1;
         private float lastX = 0;
         private float x;
         private float stillX;
+        private float lifetime = 1;
 
         protected override void Start()
         {
@@ -38,15 +38,15 @@ namespace EvolutionaryPerceptron
             }
 
             x = stickman.torso.transform.position.x;
-            lifespan += 0.0001f;
-            nb.AddFitness((x - lastX) / lifespan);
+            lifetime += Time.deltaTime / 10;
+            nb.AddFitness((x - lastX) * 5 / lifetime); //add fitness for moving forward
+            //nb.AddFitness(-0.001f); //encourage faster movement
             //nb.AddFitness(rb.velocity.x / 50);
-            if(Mathf.Abs(stickman.torsoRotation) > 170 && Mathf.Abs(stickman.torsoRotation) < 190)
+            if(Mathf.Abs(stickman.torsoRotation) > 170 && Mathf.Abs(stickman.torsoRotation) < 190) //check if flips over
             {
                 nb.AddFitness(-1000);
             }
-            lastX = x;
-
+            lastX = Math.Max(x, lastX);
             outputs = nb.SetInput(inputs);
             stickman.think(GetRow(outputs, 0));
         }
@@ -79,6 +79,16 @@ namespace EvolutionaryPerceptron
         public void DestroySelf()
         {
             nb.Destroy();
+        }
+
+        public void AddFitness(float fitness) //made so other object can call this
+        {
+            nb.AddFitness(fitness);
+        }
+
+        public float GetFitness() 
+        {
+            return nb.Fitness;
         }
 
         private IEnumerator CheckStill()

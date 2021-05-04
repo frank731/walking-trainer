@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1272531118302935854}
   - component: {fileID: 2170305541103792700}
-  - component: {fileID: 6143164022484728610}
   - component: {fileID: 8356767372604596315}
   m_Layer: 8
   m_Name: Kneel Preventer
@@ -34,32 +33,6 @@ Transform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2170305541103792700
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798721678765722321}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.41165942}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.17668119}
-  m_EdgeRadius: 0
---- !u!61 &6143164022484728610
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,7 +73,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 1
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &2263512715962557656
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,8 +87,8 @@ GameObject:
   - component: {fileID: 2263512715962557653}
   - component: {fileID: 2263512715962557652}
   - component: {fileID: 2263512715962557655}
-  - component: {fileID: 2263512715962557654}
   - component: {fileID: 8952554602667392354}
+  - component: {fileID: 8370096756181501621}
   m_Layer: 8
   m_Name: Left Leg Bottom
   m_TagString: Stickman
@@ -130,8 +104,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2263512715962557656}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.31, z: 0}
-  m_LocalScale: {x: 0.8, y: 1.4, z: 1}
+  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalScale: {x: 0.6, y: 1.5, z: 1}
   m_Children:
   - {fileID: 4929001284011438116}
   - {fileID: 1272531118302935854}
@@ -201,7 +175,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 4
+  m_Mass: 5
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -224,8 +198,8 @@ HingeJoint2D:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0.0000000065253687, y: 0.5000001}
-  m_ConnectedAnchor: {x: 0.000000011645682, y: -0.5}
+  m_Anchor: {x: 0, y: 0.5}
+  m_ConnectedAnchor: {x: 0, y: -0.4686666}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -234,7 +208,24 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: -90
     m_UpperAngle: 90
---- !u!61 &2263512715962557654
+--- !u!114 &8952554602667392354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2263512715962557656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f1142b9de07d7c46ae09ef79a558f47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stickman: {fileID: 2263512716051878106}
+  neuralStickman: {fileID: 2053977861061572981}
+  killOnGround: 0
+  leftFoot: 1
+  rightFoot: 0
+--- !u!61 &8370096756181501621
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -260,22 +251,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &8952554602667392354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2263512715962557656}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f1142b9de07d7c46ae09ef79a558f47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stickman: {fileID: 2263512716051878106}
-  neuralStickman: {fileID: 2053977861061572981}
-  killOnGround: 0
-  feet: 1
 --- !u!1 &2263512716051878108
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,8 +316,9 @@ MonoBehaviour:
   score: 0
   bestScore: 0
   showing: 0
-  isGrounded: 0
-  feetOnGround: 0
+  leftOnGround: 0
+  rightOnGround: 0
+  speed: 600
   torso: {fileID: 2263512716858043194}
   leftLegTop: {fileID: 2263512717420277140}
   leftLegBottom: {fileID: 2263512715962557656}
@@ -352,10 +328,11 @@ MonoBehaviour:
   rightArm: {fileID: 2263512716129929910}
   leftDistCheck: {fileID: 4929001284011438116}
   rightDistCheck: {fileID: 9171760957235809728}
-  genomeInputs: 5
-  genomeOutputs: 7
+  genomeInputs: 9
+  genomeOutputs: 5
   torsoRotation: 0
   vision: []
+  ns: {fileID: 2053977861061572981}
 --- !u!114 &4553023091872537903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,8 +440,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2263512716129929910}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.63, y: 0.81, z: 0}
-  m_LocalScale: {x: 1, y: 0.50885004, z: 1}
+  m_LocalPosition: {x: 0.744, y: 0.8, z: 0}
+  m_LocalScale: {x: 1, y: 0.3, z: 1}
   m_Children: []
   m_Father: {fileID: 2263512716051878109}
   m_RootOrder: 3
@@ -555,13 +532,13 @@ HingeJoint2D:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: -0.564851, y: 0.000000027915732}
-  m_ConnectedAnchor: {x: 0.13, y: 0.18555106}
+  m_Anchor: {x: -0.745, y: -0.00000010331472}
+  m_ConnectedAnchor: {x: -0.0019999743, y: 0.17962292}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
     m_MaximumMotorForce: 10000
-  m_UseLimits: 1
+  m_UseLimits: 0
   m_AngleLimits:
     m_LowerAngle: 0
     m_UpperAngle: 359
@@ -606,7 +583,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 1
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &2263512716315085024
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,8 +614,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2263512716315085024}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.4440001, y: 0.793, z: 0}
-  m_LocalScale: {x: 1, y: 0.50885004, z: 1}
+  m_LocalPosition: {x: -1.7550001, y: 0.8, z: 0}
+  m_LocalScale: {x: 1, y: 0.3, z: 1}
   m_Children: []
   m_Father: {fileID: 2263512716051878109}
   m_RootOrder: 4
@@ -779,7 +757,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 0
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &2263512716858043194
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,7 +788,7 @@ Transform:
   m_GameObject: {fileID: 2263512716858043194}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.497, z: 0}
-  m_LocalScale: {x: 1, y: 1.6868672, z: 1}
+  m_LocalScale: {x: 0.5, y: 1.6868672, z: 1}
   m_Children: []
   m_Father: {fileID: 2263512716051878109}
   m_RootOrder: 1
@@ -927,7 +906,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 1
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &2263512716936988304
 GameObject:
   m_ObjectHideFlags: 0
@@ -957,8 +937,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2263512716936988304}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.44, y: 0.79, z: 0}
-  m_LocalScale: {x: 1, y: 0.50885004, z: 1}
+  m_LocalPosition: {x: -0.751, y: 0.8, z: 0}
+  m_LocalScale: {x: 1, y: 0.3, z: 1}
   m_Children: []
   m_Father: {fileID: 2263512716051878109}
   m_RootOrder: 2
@@ -1049,8 +1029,8 @@ HingeJoint2D:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0.5654038, y: 0.000000027915732}
-  m_ConnectedAnchor: {x: 0.060000002, y: 0.17369477}
+  m_Anchor: {x: 0.75, y: 0}
+  m_ConnectedAnchor: {x: -0.0019999743, y: 0.17962292}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1100,7 +1080,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 1
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &2263512717117575980
 GameObject:
   m_ObjectHideFlags: 0
@@ -1131,7 +1112,7 @@ Transform:
   m_GameObject: {fileID: 2263512717117575980}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1, z: 0}
-  m_LocalScale: {x: 0.66, y: 1.25, z: 1}
+  m_LocalScale: {x: 0.5, y: 1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 2263512716051878109}
   m_RootOrder: 7
@@ -1222,8 +1203,8 @@ HingeJoint2D:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: -0.000000011645682, y: 0.49999997}
-  m_ConnectedAnchor: {x: 0.0036395788, y: -0.4378721}
+  m_Anchor: {x: 0, y: 0.49999997}
+  m_ConnectedAnchor: {x: 0, y: -0.44283274}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1273,7 +1254,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 0
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &2263512717139637255
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,8 +1285,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2263512717139637255}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.625, y: 0.81, z: 0}
-  m_LocalScale: {x: 1, y: 0.50885004, z: 1}
+  m_LocalPosition: {x: 1.739, y: 0.8, z: 0}
+  m_LocalScale: {x: 1, y: 0.3, z: 1}
   m_Children: []
   m_Father: {fileID: 2263512716051878109}
   m_RootOrder: 5
@@ -1446,7 +1428,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 0
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &2263512717223071203
 GameObject:
   m_ObjectHideFlags: 0
@@ -1459,8 +1442,8 @@ GameObject:
   - component: {fileID: 2263512717223071228}
   - component: {fileID: 2263512717223071231}
   - component: {fileID: 2263512717223071230}
-  - component: {fileID: 2263512717223071201}
   - component: {fileID: 2248383300872897271}
+  - component: {fileID: 3531106269372857756}
   m_Layer: 8
   m_Name: Right Leg Bottom
   m_TagString: Stickman
@@ -1476,8 +1459,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2263512717223071203}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.31, z: 0}
-  m_LocalScale: {x: 0.8, y: 1.4, z: 1}
+  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalScale: {x: 0.6, y: 1.5, z: 1}
   m_Children:
   - {fileID: 9171760957235809728}
   - {fileID: 487119233977471899}
@@ -1547,7 +1530,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 4
+  m_Mass: 5
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -1565,13 +1548,13 @@ HingeJoint2D:
   m_GameObject: {fileID: 2263512717223071203}
   m_Enabled: 1
   serializedVersion: 4
-  m_EnableCollision: 1
+  m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 2263512717117575981}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 5.3852034e-10, y: 0.49119234}
-  m_ConnectedAnchor: {x: -0.000000011645682, y: -0.5}
+  m_Anchor: {x: 0, y: 0.5}
+  m_ConnectedAnchor: {x: 0, y: -0.4686666}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1580,7 +1563,24 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: -90
     m_UpperAngle: 90
---- !u!61 &2263512717223071201
+--- !u!114 &2248383300872897271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2263512717223071203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f1142b9de07d7c46ae09ef79a558f47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stickman: {fileID: 2263512716051878106}
+  neuralStickman: {fileID: 2053977861061572981}
+  killOnGround: 0
+  leftFoot: 0
+  rightFoot: 1
+--- !u!61 &3531106269372857756
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1606,22 +1606,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &2248383300872897271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2263512717223071203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f1142b9de07d7c46ae09ef79a558f47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stickman: {fileID: 2263512716051878106}
-  neuralStickman: {fileID: 2053977861061572981}
-  killOnGround: 0
-  feet: 1
 --- !u!1 &2263512717420277140
 GameObject:
   m_ObjectHideFlags: 0
@@ -1652,7 +1636,7 @@ Transform:
   m_GameObject: {fileID: 2263512717420277140}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1, z: 0}
-  m_LocalScale: {x: 0.66, y: 1.25, z: 1}
+  m_LocalScale: {x: 0.5, y: 1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 2263512716051878109}
   m_RootOrder: 6
@@ -1743,8 +1727,8 @@ HingeJoint2D:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0.000000011645682, y: 0.5}
-  m_ConnectedAnchor: {x: 0.00003068149, y: -0.45641163}
+  m_Anchor: {x: 0, y: 0.5}
+  m_ConnectedAnchor: {x: 0, y: -0.4428327}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1794,7 +1778,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 0
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &2263512717632489890
 GameObject:
   m_ObjectHideFlags: 0
@@ -1957,7 +1942,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 1
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!1 &3486385246918776623
 GameObject:
   m_ObjectHideFlags: 0
@@ -2035,7 +2021,8 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 1
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0
 --- !u!61 &2656964049981544384
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2165,4 +2152,5 @@ MonoBehaviour:
   stickman: {fileID: 2263512716051878106}
   neuralStickman: {fileID: 2053977861061572981}
   killOnGround: 1
-  feet: 0
+  leftFoot: 0
+  rightFoot: 0

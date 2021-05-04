@@ -9,15 +9,9 @@ namespace EvolutionaryPerceptron
         public Stickman stickman;
         public NeuralStickman neuralStickman;
         public bool killOnGround;
-        public bool feet;
+        public bool leftFoot;
+        public bool rightFoot;
 
-        private void Start()
-        {
-            if (feet)
-            {
-                stickman.feetOnGround++;
-            }
-        }
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.collider.CompareTag("Stickman") && collision.gameObject != gameObject)
@@ -31,23 +25,17 @@ namespace EvolutionaryPerceptron
                     stickman.dead = true;
                     neuralStickman.DestroySelf();
                 }
-                else if (feet)
-                {
-                    stickman.feetOnGround++;
-                    stickman.isGrounded = true;
-                }
+                else if (leftFoot) stickman.leftOnGround = true;
+                else if (rightFoot) stickman.rightOnGround = true;
             }
         }
 
         private void OnCollisionExit2D(Collision2D collision)
         {
-            if (collision.collider.CompareTag("Ground") && feet)
+            if (collision.collider.CompareTag("Ground"))
             {
-                stickman.feetOnGround--;
-                if (stickman.feetOnGround <= 0)
-                {
-                    stickman.isGrounded = false;
-                }
+                if (leftFoot) stickman.leftOnGround = false;
+                else if (rightFoot) stickman.rightOnGround = false;
             }
         }
     }

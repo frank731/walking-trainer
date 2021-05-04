@@ -8,7 +8,7 @@ public class StickmanMendelMachine : MendelMachine
     private int index = 15;
     public Transform startPoint;
     public float farthest = 0;
-    public CameraFollowBest cameraFollow;
+    public VisualsHandler visualHandler;
 
     private static StickmanMendelMachine _instance;
     public static StickmanMendelMachine Instance { get { return _instance; } }
@@ -59,12 +59,13 @@ public class StickmanMendelMachine : MendelMachine
         }
     }
 
-    public bool CheckFarthest(Transform pos)
+    public bool CheckFarthest(Transform pos, EvolutionaryPerceptron.NeuralStickman ns)
     {
         if (pos.position.x > farthest)
         {
             farthest = pos.position.x;
-            cameraFollow.farthestStickman = pos;
+            visualHandler.farthestStickman = pos;
+            visualHandler.neuralStickman = ns;
             return true;
         }
         return false;

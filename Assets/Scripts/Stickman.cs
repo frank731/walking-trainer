@@ -12,9 +12,10 @@ public class Stickman : MonoBehaviour
     public int score;
     public int bestScore = 0;
     public bool showing;
-    public bool isGrounded = false;
-    public int feetOnGround = 0;
+    public bool leftOnGround = false;
+    public bool rightOnGround = false;
     private bool isFarthest;
+    public float speed = 300;
 
     public GameObject torso;
     public GameObject leftLegTop;
@@ -46,16 +47,21 @@ public class Stickman : MonoBehaviour
     private GameObject stickmanPrefab;
     private Transform sp;
 
-    public int genomeInputs = 5;
-    public int genomeOutputs = 7;
+    public int genomeInputs = 11;
+    public int genomeOutputs = 5;
 
     public float torsoRotation;
     public double[] vision;
     private int counter = 0;
+    private StickmanMendelMachine stickmanMendelMachine;
+
+    [SerializeField]
+    EvolutionaryPerceptron.NeuralStickman ns;
 
     private void Awake()
     {
         vision = new double[genomeInputs];
+        stickmanMendelMachine = StickmanMendelMachine.Instance;
     }
     void Start()
     {
@@ -67,7 +73,7 @@ public class Stickman : MonoBehaviour
         rightLegBottomRB = rightLegBottom.GetComponent<Rigidbody2D>();
         leftArmRB = leftArm.GetComponent<Rigidbody2D>();
         rightArmRB = rightArm.GetComponent<Rigidbody2D>();
-        rbs = new Rigidbody2D[]{torsoRB, leftLegTopRB, leftLegBottomRB, rightLegTopRB, rightLegBottomRB, leftArmRB, rightArmRB };
+        rbs = new Rigidbody2D[] { torsoRB, leftLegTopRB, leftLegBottomRB, rightLegTopRB, rightLegBottomRB, leftArmRB, rightArmRB };
         leftLegBottomJoint = leftLegBottom.GetComponent<HingeJoint2D>();
         leftLegTopJoint = leftLegTop.GetComponent<HingeJoint2D>();
         rightLegBottomJoint = rightLegBottom.GetComponent<HingeJoint2D>();
@@ -75,13 +81,9 @@ public class Stickman : MonoBehaviour
         //hide();
     }
 
-    public float getXPos()
-    {
-        return transform.localPosition.x;
-    }
     private void Update()
     {
-        if (StickmanMendelMachine.Instance.CheckFarthest(transform))
+        if (stickmanMendelMachine.CheckFarthest(transform, ns))
         {
             isFarthest = true;
             //show();
@@ -92,25 +94,16 @@ public class Stickman : MonoBehaviour
         
         torsoRotation = torso.transform.rotation.eulerAngles.z / 360;//ensure between 0 and 1
         vision[0] = torsoRotation;
-        //vision[1] = 1 / (1 + Mathf.Pow((float)Math.E, torsoRB.velocity.x)); //normalizes the input to be between 0 and 1, called a sigmoid cool
-        //vision[2] = 1 / (1 + Mathf.Pow((float)Math.E, torsoRB.velocity.y));
-        //vision[3] = 1 / (1 + Mathf.Pow((float)Math.E, leftLegTopRB.velocity.x));
-        //vision[4] = 1 / (1 + Mathf.Pow((float)Math.E, leftLegTopRB.velocity.y));
-        //vision[5] = 1 / (1 + Mathf.Pow((float)Math.E, leftLegBottomRB.velocity.x));
-        //vision[6] = 1 / (1 + Mathf.Pow((float)Math.E, leftLegBottomRB.velocity.y));
-        //vision[7] = 1 / (1 + Mathf.Pow((float)Math.E, rightLegTopRB.velocity.x));
-        //vision[8] = 1 / (1 + Mathf.Pow((float)Math.E, rightLegTopRB.velocity.y));
-        //vision[9] = 1 / (1 + Mathf.Pow((float)Math.E, rightLegBottomRB.velocity.x));
-        //vision[10] = 1 / (1 + Mathf.Pow((float)Math.E, rightLegBottomRB.velocity.y));
-        vision[1] = leftLegTop.transform.eulerAngles.z / 360;
-        vision[2] = leftLegBottom.transform.eulerAngles.z / 360;
-        vision[3] = rightLegTop.transform.eulerAngles.z / 360;
-        vision[4] = rightLegBottom.transform.eulerAngles.z / 360;
-        //vision[5] = Convert.ToInt32(isGrounded);
-        //vision[6] = 1 / (1 + Mathf.Pow((float)Math.E, leftDistCheck.position.y));
-        //vision[7] = 1 / (1 + Mathf.Pow((float)Math.E, rightDistCheck.position.y));
-        //TODO check for feet distnace from ground
-        //Debug.Log(vision[0] + " " + vision[1] + " " + vision[2] + " " + vision[3]);
+        vision[1] = leftLegTop.transform.rotation.eulerAngles.z / 360;
+        vision[2] = leftLegBottom.transform.rotation.eulerAngles.z / 360;
+        vision[3] = rightLegBottom.transform.rotation.eulerAngles.z / 360;
+        vision[4] = rightLegTop.transform.rotation.eulerAngles.z / 360;
+        vision[5] = 1 / (1 + Mathf.Pow((float)Math.E, torsoRB.angularVelocity)); //normalizes the input to be between 0 and 1, called a sigmoid cool
+        vision[6] = 1 / (1 + Mathf.Pow((float)Math.E, leftLegBottomRB.angularVelocity));
+        vision[7] = 1 / (1 + Mathf.Pow((float)Math.E, rightLegBottomRB.angularVelocity));
+        //vision[8] = Convert.ToInt32(leftOnGround);
+        //vision[9] = Convert.ToInt32(rightOnGround);
+        vision[8] = Mathf.Clamp(torso.transform.position.y + 0.5f, -1, 1);//height of stickman 
     }
 
     public void show()
@@ -135,178 +128,43 @@ public class Stickman : MonoBehaviour
     //gets the output of the brain then converts them to actions
     public void think(double[] doubleDecision)
     {
+        //get the output of the neural network
         float[] decision = new float[doubleDecision.Length];
         for (int i = 0; i < doubleDecision.Length; i++)
         {
-            decision[i] = (float)doubleDecision[i];
+            decision[i] = (float)Math.Tanh(doubleDecision[i]);
+            //
         }
-        //get the output of the neural network
-        /*
-        if (!isGrounded)
+        //set motors and torque according to outputs
+        torsoRB.AddTorque(decision[0] * 4000 * Time.fixedDeltaTime);
+        //joints
+        JointMotor2D llm = leftLegBottomJoint.motor;
+        llm.motorSpeed = decision[1] * speed;
+        leftLegBottomJoint.motor = llm;
+
+        JointMotor2D ltm = leftLegTopJoint.motor;
+        ltm.motorSpeed = decision[2] * speed;
+        leftLegTopJoint.motor = ltm;
+
+        JointMotor2D rlm = rightLegBottomJoint.motor;
+        rlm.motorSpeed = decision[3] * speed;
+        rightLegBottomJoint.motor = rlm;
+
+        JointMotor2D rtm = rightLegTopJoint.motor;
+        rtm.motorSpeed = decision[4] * speed;
+        rightLegTopJoint.motor = rtm;
+      /*
+        if(counter % 10 == 0)
         {
-            torsoRB.AddForce(new Vector2(decision[0], 0) *  0.5f);
-            leftLegTopRB.AddForce(new Vector2(decision[2], 0) *  0.5f);
-            leftLegBottomRB.AddForce(new Vector2(decision[4], 0) *  0.5f);
-            rightLegTopRB.AddForce(new Vector2(decision[6], 0) *  0.5f);
-            rightLegBottomRB.AddForce(new Vector2(decision[8], 0) *  0.5f);
-        }
-        else
-        {
-            torsoRB.AddForce(new Vector2(decision[0], decision[1]) *  0.5f);
-            leftLegTopRB.AddForce(new Vector2(decision[2], decision[3]) *  0.5f);
-            leftLegBottomRB.AddForce(new Vector2(decision[4], decision[5]) *  0.5f);
-            rightLegTopRB.AddForce(new Vector2(decision[6], decision[7]) *  0.5f);
-            rightLegBottomRB.AddForce(new Vector2(decision[8], decision[9]) *  0.5f);
-        }
-        */
-        counter++;
-        /*
-        if (counter % 5 == 0) //remove jitter
-        {
-            
-            torsoRB.MoveRotation(Mathf.Clamp(decision[0] * 10, -5, 5));
-            leftLegTopRB.MoveRotation(Mathf.Clamp(decision[1] * 10, -50, 50));
-            leftLegBottomRB.MoveRotation(Mathf.Clamp(decision[2] * 10, -50, 50));
-            rightLegTopRB.MoveRotation(Mathf.Clamp(decision[3] * 10, -50, 50));
-            rightLegBottomRB.MoveRotation(Mathf.Clamp(decision[4] * 10, -50, 50));
-            leftArmRB.MoveRotation(Mathf.Clamp(decision[5] * 10, -50, 50));
-            rightArmRB.MoveRotation(Mathf.Clamp(decision[6] * 10, -50, 50));
-            
-            
             for (int i = 0; i < genomeOutputs; i++)
             {
-                if (Mathf.Abs((float)Math.Sin(decision[i])) > 0.5)
-                {
-                    rbs[i].MoveRotation(Mathf.Clamp(decision[i] * 30, -50, 50));
-                }
-                else
-                {
-                    rbs[i].MoveRotation(Mathf.Clamp(decision[i] * -30, -50, 50));
-                }
+                decision[i] = (float)Math.Tanh(decision[i]);
+                ns.AddFitness(Math.Abs(decision[i]) * -0.1f);
+                rbs[i].MoveRotation(decision[i] * 50);
             }
-            
+            //TODO switch to motors like dani vid
         }
         */
-        
-        if (counter % 10 == 0) //remove jitter
-        {
-            for(int i = 0; i < genomeOutputs; i++)
-            {
-                decision[i] = (float)Math.Sin(decision[i]);
-                if (Mathf.Abs(decision[i]) > 0.5f)
-                {
-                    rbs[i].AddTorque(Mathf.Clamp(decision[i] * 1000, -10000, 10000));
-                }
-                
-                else
-                {
-                    rbs[i].AddTorque(Mathf.Clamp(decision[i] * -1000, -10000, 10000));
-                }
-                
-            }
-        }
-        
-        /*
-        if (counter % 20 == 0)
-        {
-            torsoRB.angularVelocity = Mathf.Clamp(decision[0], -10, 10);
-            //Debug.Log(decision[0] + " " + decision[1] + " " + decision[2] + " " + decision[3]);
-            leftLegTopRB.angularVelocity = Mathf.Clamp(decision[1], -1000, 1000);
-            leftLegBottomRB.angularVelocity = Mathf.Clamp(decision[2], -1000, 1000);
-            rightLegTopRB.angularVelocity = Mathf.Clamp(decision[3], -1000, 1000);
-            rightLegBottomRB.angularVelocity = Mathf.Clamp(decision[4], -1000, 1000);
-        }
-        8?
-        /*
-        if (counter % 5 == 0 && isGrounded)
-        {
-            if (decision[4] > 0.5)
-            {
-                JointMotor2D motor = leftLegBottomJoint.motor;
-                motor.motorSpeed = decision[0] * 3f;
-                leftLegBottomJoint.motor = motor;
-            }
-            else
-            {
-                JointMotor2D motor = leftLegBottomJoint.motor;
-                motor.motorSpeed = decision[0] * -3f;
-                leftLegBottomJoint.motor = motor;
-            }
-            if (decision[5] > 0.5)
-            {
-                JointMotor2D motor = leftLegTopJoint.motor;
-                motor.motorSpeed = decision[1] * 3f;
-                leftLegTopJoint.motor = motor;
-            }
-            else
-            {
-                JointMotor2D motor = leftLegTopJoint.motor;
-                motor.motorSpeed = decision[1] * -3f;
-                leftLegTopJoint.motor = motor;
-            }
-            if (decision[6] > 0.5)
-            {
-                JointMotor2D motor = rightLegTopJoint.motor;
-                motor.motorSpeed = decision[2] * 3f;
-                rightLegTopJoint.motor = motor;
-            }
-            else
-            {
-                JointMotor2D motor = rightLegTopJoint.motor;
-                motor.motorSpeed = decision[2] * -3f;
-                rightLegTopJoint.motor = motor;
-            }
-            if (decision[7] > 0.5)
-            {
-                JointMotor2D motor = rightLegBottomJoint.motor;
-                motor.motorSpeed = decision[3] * 3f;
-                rightLegBottomJoint.motor = motor;
-            }
-            else
-            {
-                JointMotor2D motor = rightLegBottomJoint.motor;
-                motor.motorSpeed = decision[3] * -3f;
-                rightLegBottomJoint.motor = motor;
-            }
-        }
-        */
-        /*
-        if (counter % 5 == 0)
-        {
-            torsoRB.AddTorque(Mathf.Clamp((float)Math.Sin(decision[0]), -5, 5));
-            Debug.Log((float)Math.Sin(decision[0]) + " " + (float)Math.Sin(decision[1]) + " " + (float)Math.Sin(decision[2]) + " " + (float)Math.Sin(decision[3]) + " " + decision[4]);
-            leftLegTopRB.AddTorque(Mathf.Clamp((float)Math.Sin(decision[1]), -50, 50));
-            leftLegBottomRB.AddTorque(Mathf.Clamp((float)Math.Sin(decision[2]), -50, 50));
-            rightLegTopRB.AddTorque(Mathf.Clamp((float)Math.Sin(decision[3]), -50, 50));
-            rightLegBottomRB.AddTorque(Mathf.Clamp((float)Math.Sin(decision[4]), -50, 50));
-        }
-        */
-        /*
-        if (counter % 5 == 0)
-        {
-            torsoRB.AddTorque(Mathf.Clamp(decision[0], -5, 5));
-            //Debug.Log((float)Math.Sin(decision[0]) + " " + (float)Math.Sin(decision[1]) + " " + (float)Math.Sin(decision[2]) + " " + (float)Math.Sin(decision[3]) + " " + decision[4]);
-            leftLegTopRB.AddTorque(Mathf.Clamp(decision[1], -50, 50));
-            leftLegBottomRB.AddTorque(Mathf.Clamp(decision[2], -50, 50));
-            rightLegTopRB.AddTorque(Mathf.Clamp(decision[3], -50, 50));
-            rightLegBottomRB.AddTorque(Mathf.Clamp(decision[4], -50, 50));
-        }
-        /*
-        if (counter % 10 == 0)
-        {
-            torsoRB.angularVelocity = Mathf.Clamp(decision[0], -5, 5);
-            //Debug.Log(decision[0] + " " + decision[1] + " " + decision[2] + " " + decision[3]);
-            leftLegTopRB.angularVelocity =Mathf.Clamp(decision[1], -50, 50);
-            leftLegBottomRB.angularVelocity =Mathf.Clamp(decision[2], -50, 50);
-            rightLegTopRB.angularVelocity =Mathf.Clamp(decision[3], -50, 50);
-            rightLegBottomRB.angularVelocity =Mathf.Clamp(decision[4], -50, 50);
-        }
-        */
-
-
-
-
-
     }
     private void OnDestroy()
     {
